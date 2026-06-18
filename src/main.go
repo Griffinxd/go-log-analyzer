@@ -29,12 +29,10 @@ type LogFile struct {
 }
 
 func ReadFile(FileName string) []string {
-
 	file, err := os.Open(FileName)
 	if err != nil {
 		panic(err)
 	}
-
 	fileScanner := bufio.NewScanner(file)
 	fileScanner.Split(bufio.ScanLines)
 	var fileLines []string
@@ -51,13 +49,12 @@ func ReadFile(FileName string) []string {
 }
 
 func CheckLine(Line string) LogEntry {
-
 	var entry LogEntry
 	// Line[0] should be '['
 	// Line [20] should be ']'
 	// Check Timestamp
 	timeStampStr := Line[0:21]
-	fmt.Println(timeStampStr)
+	// fmt.Println(timeStampStr)
 	if timeStampStr[0] != '[' && timeStampStr[20] != ']' {
 		panic("timestamp is not in correct format ")
 	}
@@ -70,7 +67,7 @@ func CheckLine(Line string) LogEntry {
 
 	// After Stimestamp
 	remainingLine := Line[22:]
-	fmt.Println(remainingLine)
+	// fmt.Println(remainingLine)
 
 	strings := strings.SplitN(remainingLine, " ", 2)
 	// fmt.Printf("Level: \"%s\"| Message: \"%s\"", strings[0], strings[1])
@@ -79,18 +76,19 @@ func CheckLine(Line string) LogEntry {
 	// for i := 0; i < len(Line); i++ {
 	// 	// fmt.Printf("%d, %c\n", i, Line[i])
 	// }
-
 	return entry
 }
 
 func ParseLines(FileLines []string) []LogEntry {
-
 	lineCount := len(FileLines)
 	entries := make([]LogEntry, lineCount)
-	entry := CheckLine(FileLines[0])
-	fmt.Println("timestamp:", entry.Timestamp)
-	fmt.Println("level:", entry.Level)
-	fmt.Println("message:", entry.Message)
+	for _, line := range FileLines {
+		entry := CheckLine(line)
+		fmt.Println(entry)
+	}
+	// fmt.Println("timestamp:", entry.Timestamp)
+	// fmt.Println("level:", entry.Level)
+	// fmt.Println("message:", entry.Message)
 	// Parsing logic
 	// for _, line := range FileLines {
 	//
@@ -118,7 +116,6 @@ func main() {
 	var logfile LogFile
 	logfile.Path = args[1]
 	// fmt.Println("Filename: " + fileName)
-
 	logfile.Entries = ParseLines(ReadFile(logfile.Path))
 
 }
