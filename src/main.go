@@ -28,6 +28,17 @@ type LogFile struct {
 	Path    string
 }
 
+type Formatter interface {
+	Format(entry LogEntry) string
+}
+
+type TextFormatter struct {
+}
+
+func (t TextFormatter) Format(entry LogEntry) string {
+	return fmt.Sprintf("[%v] %s %s", entry.Timestamp, entry.Level, entry.Message)
+}
+
 func ReadFile(FileName string) []string {
 	file, err := os.Open(FileName)
 	if err != nil {
@@ -76,6 +87,7 @@ func CheckLine(Line string) LogEntry {
 	// for i := 0; i < len(Line); i++ {
 	// 	// fmt.Printf("%d, %c\n", i, Line[i])
 	// }
+	fmt.Println(entry)
 	return entry
 }
 
@@ -84,7 +96,8 @@ func ParseLines(FileLines []string) []LogEntry {
 	entries := make([]LogEntry, lineCount)
 	for _, line := range FileLines {
 		entry := CheckLine(line)
-		fmt.Println(entry)
+		entries = append(entries, entry)
+		// fmt.Println(entry)
 	}
 	// fmt.Println("timestamp:", entry.Timestamp)
 	// fmt.Println("level:", entry.Level)
@@ -117,5 +130,8 @@ func main() {
 	logfile.Path = args[1]
 	// fmt.Println("Filename: " + fileName)
 	logfile.Entries = ParseLines(ReadFile(logfile.Path))
+	text := TextFormatter{}
+
+	fmt.Println(text.Format(logfile.Entries[0]))
 
 }
