@@ -26,6 +26,17 @@ type LogFile struct {
 	Path    string
 }
 
+func ReadFile(FileName string) {
+
+	data, err := os.ReadFile(FileName)
+	if err != nil {
+		log.Fatalf("Error reading file: %s", FileName)
+	}
+
+	fmt.Println(string(data))
+
+}
+
 func main() {
 
 	args := os.Args
@@ -39,4 +50,9 @@ func main() {
 		fmt.Println(arg)
 	}
 
+	fmt.Println("#################################################\n\n")
+	fileName := args[1]
+	fmt.Println("Filename: " + fileName)
+
+	ReadFile(fileName)
 }
