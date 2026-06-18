@@ -1,0 +1,10 @@
+[2024-01-15 10:30:45] INFO Application started
+[2024-01-15 10:31:02] INFO User login: admin
+[2024-01-15 10:32:15] WARNING High memory usage detected
+[2024-01-15 10:33:00] ERROR Database connection failed
+[2024-01-15 10:33:05] ERROR Retrying connection...
+[2024-01-15 10:33:10] INFO Connection restored
+[2024-01-15 10:35:22] WARNING Cache miss rate 45%
+[2024-01-15 10:36:00] ERROR Invalid request format
+[2024-01-15 10:36:15] INFO Request processed
+[2024-01-15 10:37:00] ERROR Timeout on external API call

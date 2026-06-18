@@ -1,0 +1,12 @@
+[2024-01-15 09:00:00] INFO Entry before range
+[2024-01-15 09:30:00] INFO Entry before range
+[2024-01-15 10:00:00] INFO Start of filter range
+[2024-01-15 10:15:00] WARNING In range - warning
+[2024-01-15 10:30:00] ERROR In range - error
+[2024-01-15 10:45:00] INFO In range - info
+[2024-01-15 11:00:00] WARNING In range - warning
+[2024-01-15 11:15:00] ERROR In range - error
+[2024-01-15 11:30:00] INFO In range - info
+[2024-01-15 12:00:00] INFO End of filter range
+[2024-01-15 12:30:00] INFO Entry after range
+[2024-01-15 13:00:00] INFO Entry after range

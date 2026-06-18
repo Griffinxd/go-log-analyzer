@@ -1,0 +1,12 @@
+[2024-01-15 10:00:00] INFO Valid entry
+This line has no brackets at all
+[2024-01-15 10:01:00] DEBUG This level doesn't exist
+[2024-01-15 10:02:00 ERROR Missing closing bracket
+[2024-01-15] INCOMPLETE Timestamp too short
+[2024-01-15 10:03:00] INFO
+[2024-01-15 10:04:00] WARNING Empty message above
+[2024-01-15 10:05:00] ERROR Message with [brackets] inside
+[not-a-timestamp 10:05:00] INFO Invalid timestamp format
+[2024-01-15 10:06:00] info lowercase level should work
+[2024-01-15 10:07:00] ERROR
+[2024-01-15 10:08:00] INFO Valid again after errors
