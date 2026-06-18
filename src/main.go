@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -8,6 +9,8 @@ import (
 )
 
 type LogLevel string
+
+const StringSliceCapacity = 100
 
 const (
 	LevelInfo    LogLevel = "INFO"
@@ -28,12 +31,23 @@ type LogFile struct {
 
 func ReadFile(FileName string) {
 
-	data, err := os.ReadFile(FileName)
+	file, err := os.Open(FileName)
 	if err != nil {
-		log.Fatalf("Error reading file: %s", FileName)
+		panic(err)
 	}
 
-	fmt.Println(string(data))
+	fileScanner := bufio.NewScanner(file)
+	fileScanner.Split(bufio.ScanLines)
+	var fileLines []string = make([]string, StringSliceCapacity)
+
+	for fileScanner.Scan() {
+		fileLines = append(fileLines, fileScanner.Text())
+	}
+
+	for _, line := range fileLines {
+		fmt.Println(line)
+	}
+	// fmt.Println(string(data))
 
 }
 
@@ -46,11 +60,10 @@ func main() {
 	}
 
 	fmt.Println("Command Line Arguments")
-	for _, arg := range args {
-		fmt.Println(arg)
-	}
+	// for _, arg := range args {
+	// 	fmt.Println(arg)
+	// }
 
-	fmt.Println("#################################################\n\n")
 	fileName := args[1]
 	fmt.Println("Filename: " + fileName)
 
