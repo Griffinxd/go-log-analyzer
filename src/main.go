@@ -42,6 +42,32 @@ type JSONFormatter struct{}
 
 type CSVFormatter struct{}
 
+type Stats struct {
+	TotalEntries    int
+	InfoCount       int
+	WarningCount    int
+	ErrorCount      int
+	MostCommonError string
+}
+
+func (lf *LogFile) GetStats() Stats {
+
+	var stats Stats
+	stats.TotalEntries = len(lf.Entries)
+	for i, log := range lf.Entries {
+		fmt.Println(log, i)
+		switch log.Level {
+		case LevelError:
+			stats.ErrorCount++
+		case LevelWarning:
+			stats.WarningCount++
+		case LevelInfo:
+			stats.InfoCount++
+		}
+	}
+	return stats
+}
+
 func (j JSONFormatter) Format(entry LogEntry) string {
 	data, err := json.MarshalIndent(entry, "", "\t")
 	if err != nil {
@@ -162,4 +188,6 @@ func main() {
 	// fmt.Println(text.Format(logfile.Entries[6]))
 	// fmt.Println(jsonForm.Format(logfile.Entries[6]))
 	// fmt.Println(csvformat.Format(logfile.Entries[6]))
+	stats := logfile.GetStats()
+	fmt.Println(stats)
 }
