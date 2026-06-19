@@ -224,6 +224,11 @@ func main() {
 
 	flag.Parse()
 
+	if *fileptr == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
 	logfile.Path = *fileptr
 	logfile.Entries = ParseLines(ReadFile(logfile.Path))
 
