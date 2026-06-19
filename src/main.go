@@ -2,6 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -33,6 +36,29 @@ type Formatter interface {
 }
 
 type TextFormatter struct {
+}
+
+type JSONFormatter struct{}
+
+type CSVFormatter struct{}
+
+func (j JSONFormatter) Format(entry LogEntry) string {
+	data, err := json.MarshalIndent(entry, "", "\t")
+	if err != nil {
+		panic("json format error")
+	}
+	return string(data)
+}
+
+func (c CSVFormatter) Format(entry LogEntry) string {
+	var buf bytes.Buffer
+	w := csv.NewWriter(&buf)
+	err := w.Write([]string{entry.Timestamp.String(), string(entry.Level), entry.Message})
+	if err != nil {
+		panic("csv format error")
+	}
+	w.Flush()
+	return buf.String()
 }
 
 func (t TextFormatter) Format(entry LogEntry) string {
@@ -129,8 +155,11 @@ func main() {
 	logfile.Path = args[1]
 	// fmt.Println("Filename: " + fileName)
 	logfile.Entries = ParseLines(ReadFile(logfile.Path))
-	text := TextFormatter{}
-
-	fmt.Println(text.Format(logfile.Entries[0]))
-
+	// text := TextFormatter{}
+	// jsonForm := JSONFormatter{}
+	// csvformat := CSVFormatter{}
+	//
+	// fmt.Println(text.Format(logfile.Entries[6]))
+	// fmt.Println(jsonForm.Format(logfile.Entries[6]))
+	// fmt.Println(csvformat.Format(logfile.Entries[6]))
 }
