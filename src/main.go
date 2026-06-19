@@ -51,7 +51,6 @@ type Stats struct {
 }
 
 func (lf *LogFile) GetStats() Stats {
-
 	var stats Stats
 	stats.TotalEntries = len(lf.Entries)
 	for i, log := range lf.Entries {
@@ -164,6 +163,32 @@ func ParseLines(FileLines []string) []LogEntry {
 	return entries
 }
 
+func FilterEntry(Entry LogEntry, Level LogLevel, StartTime, EndTime time.Time) bool {
+
+	if Level != "" && Entry.Level != Level {
+		return false
+	}
+	if Entry.Timestamp.Before(StartTime) {
+		return false
+	}
+	if Entry.Timestamp.After(EndTime) {
+		return false
+	}
+
+	return true
+}
+
+func (lf *LogFile) Filter(Level LogLevel, StartTime, EndTime time.Time) []LogEntry {
+	var returnArr []LogEntry = make([]LogEntry, 0)
+
+	for _, log := range lf.Entries {
+		if FilterEntry(log, Level, StartTime, EndTime) {
+			returnArr = append(returnArr, log)
+		}
+	}
+	return returnArr
+}
+
 func main() {
 
 	args := os.Args
@@ -188,6 +213,9 @@ func main() {
 	// fmt.Println(text.Format(logfile.Entries[6]))
 	// fmt.Println(jsonForm.Format(logfile.Entries[6]))
 	// fmt.Println(csvformat.Format(logfile.Entries[6]))
-	stats := logfile.GetStats()
-	fmt.Println(stats)
+	// stats := logfile.GetStats()
+	// filtered := logfile.Filter(LevelInfo, time.Time{}, time.Now())
+	// for _, log := range filtered {
+	// 	fmt.Println(log)
+	// }
 }
