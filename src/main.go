@@ -87,17 +87,16 @@ func CheckLine(Line string) LogEntry {
 	// for i := 0; i < len(Line); i++ {
 	// 	// fmt.Printf("%d, %c\n", i, Line[i])
 	// }
-	fmt.Println(entry)
+	// fmt.Printf("%v \n", entry)
 	return entry
 }
 
 func ParseLines(FileLines []string) []LogEntry {
 	lineCount := len(FileLines)
-	entries := make([]LogEntry, lineCount)
+	entries := make([]LogEntry, 0, lineCount)
 	for _, line := range FileLines {
-		entry := CheckLine(line)
-		entries = append(entries, entry)
-		// fmt.Println(entry)
+		entries = append(entries, CheckLine(line))
+		// fmt.Println(entries[i])
 	}
 	// fmt.Println("timestamp:", entry.Timestamp)
 	// fmt.Println("level:", entry.Level)
@@ -109,7 +108,7 @@ func ParseLines(FileLines []string) []LogEntry {
 	// 	// var entry LogEntry
 	// 	CheckLine(line)
 	// }
-
+	// fmt.Printf("%v", entries[0])
 	return entries
 }
 
