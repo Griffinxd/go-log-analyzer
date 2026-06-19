@@ -15,7 +15,8 @@ go build -o loganalyzer src/main.go
 Run it with empty arguments. It will inform you about the arguments
 ```bash
 ./loganalyzer
-
+```
+```bash
 Usage of ./loganalyzer:
   -file string
         path for the target log file, required
