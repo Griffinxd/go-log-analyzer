@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -53,8 +53,7 @@ type Stats struct {
 func (lf *LogFile) GetStats() Stats {
 	var stats Stats
 	stats.TotalEntries = len(lf.Entries)
-	for i, log := range lf.Entries {
-		fmt.Println(log, i)
+	for _, log := range lf.Entries {
 		switch log.Level {
 		case LevelError:
 			stats.ErrorCount++
@@ -191,11 +190,11 @@ func (lf *LogFile) Filter(Level LogLevel, StartTime, EndTime time.Time) []LogEnt
 
 func main() {
 
-	args := os.Args
-	argc := len(args)
-	if argc != 2 {
-		log.Fatalf("Invalid number of arguments")
-	}
+	// args := os.Args
+	// argc := len(args)
+	// if argc < 2 {
+	// 	log.Fatalf("Invalid number of arguments")
+	// }
 
 	// fmt.Println("Command Line Arguments")
 	// for _, arg := range args {
@@ -203,9 +202,7 @@ func main() {
 	// }
 
 	var logfile LogFile
-	logfile.Path = args[1]
 	// fmt.Println("Filename: " + fileName)
-	logfile.Entries = ParseLines(ReadFile(logfile.Path))
 	// text := TextFormatter{}
 	// jsonForm := JSONFormatter{}
 	// csvformat := CSVFormatter{}
@@ -218,4 +215,50 @@ func main() {
 	// for _, log := range filtered {
 	// 	fmt.Println(log)
 	// }
+	fileptr := flag.String("file", "", "path for the target log file, required")
+	levelptr := flag.String("level", "", "INFO, WARNING, ERROR or empty for all")
+	fromptr := flag.String("from", "", "Start timestamp format: YYYY-MM-DD HH:MM:SS")
+	toptr := flag.String("to", "", "End timestamp format: YYYY-MM-DD HH:MM:SS")
+	formatptr := flag.String("format", "text", "Output format (text, json, csv). Default: text")
+	statsptr := flag.Bool("stats", false, "Print statistics instead of entries")
+
+	flag.Parse()
+
+	logfile.Path = *fileptr
+	logfile.Entries = ParseLines(ReadFile(logfile.Path))
+
+	level := LogLevel(*levelptr)
+	from, fromerr := time.Parse("2006-01-02 15:04:05", *fromptr)
+	if fromerr != nil {
+		from = time.Time{}
+	}
+	to, toerr := time.Parse("2006-01-02 15:04:05", *toptr)
+	if toerr != nil {
+		to = time.Now()
+	}
+
+	filtered := logfile.Filter(level, from, to)
+
+	var formatter Formatter
+	switch *formatptr {
+	case "csv":
+		formatter = CSVFormatter{}
+	case "json":
+		formatter = JSONFormatter{}
+	case "text":
+		formatter = TextFormatter{}
+	}
+
+	if *statsptr {
+		stats := logfile.GetStats()
+		fmt.Println("Total Entries:", stats.TotalEntries)
+		fmt.Println("Warning:", stats.WarningCount)
+		fmt.Println("Info", stats.InfoCount)
+		fmt.Println("Error:", stats.ErrorCount)
+	} else {
+		for _, log := range filtered {
+			fmt.Println(formatter.Format(log))
+		}
+	}
+
 }
